@@ -50,6 +50,10 @@ def create_cli_parser():
                               help='Screenshot window image width size. 600-7680 (eg. 1920)')
     http_options.add_argument('--height', metavar="768", default=768, type=int,
                               help='Screenshot window image height size. 400-4320 (eg. 1080)')
+    output_options = parser.add_argument_group('Output Options')
+    output_options.add_argument('-d', metavar='Directory Name',
+                                default=None,
+                                help='Directory name for storing screenshots')
     resume_options = parser.add_argument_group('Resume Options')
     resume_options.add_argument('--resume', metavar='ew.db',
                                 default=None, help='Path to db file if you want to resume')
@@ -91,6 +95,14 @@ def create_cli_parser():
         parser.print_help()
         sys.exit()
         
+    if args.d is not None:
+        if not os.path.exists(args.d):
+            os.makedirs(args.d)
+    else:
+        output_folder = args.date.replace('/', '-') + '_' + args.time.replace(':', '')
+        args.d = os.path.join(os.getcwd(), output_folder)
+        os.makedirs(args.d)
+
     args.log_file_path = os.path.join(args.d, 'logfile.log')
     return args
 
